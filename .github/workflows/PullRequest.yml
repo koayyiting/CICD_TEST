@@ -30,6 +30,9 @@ jobs:
           echo "::set-output name=reviewers::$REVIEWERS"
 
       # Add Reviewer to Pull Request
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secret.GITHUB_TOKEN }}
       - name: Add Reviewers
         uses: madrapps/add-reviewers@v1
         with:
