@@ -1,4 +1,4 @@
-#Reusabel Build Set Up Workflow
+#Reusable Build Set Up Workflow
 name: Build SetUp (Shared)
 
 on:
@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v4  # Checkout first to ensure go.sum is available
 
     - name: Set Up Go
-    - uses: actions/setup-go@v4  # Setup Go after checkout
+      uses: actions/setup-go@v4  # Setup Go after checkout
       with:
         go-version: '1.18'
     
