@@ -38,7 +38,7 @@ jobs:
       run: go get -v -t -d ./microservices
 
     - name: Use Test Folder
-      run: go test -v ./testcase -coverageprofile=report.out
+      run: go test -v ./tdd -coverageprofile=report.out
 
     - name: Upload Coverage Report
       uses: codecov/codec-actions@v3
@@ -64,17 +64,17 @@ jobs:
     # [Edit] Check tdd directory
     - name: Display tdd directory and content
       run: |
-        ls -la testcase          # List contents
-        cat testcase/report.out  # Print contents of report.xml
+        ls -la tdd          # List contents
+        cat tdd/report.out  # Print contents of report.out
 
     # [Edit] Create testresults directory and move test results in new directory
     - name: Create Test Results Folder
       run: |
         mkdir testresults
-        if [[ -f testcase/report.out ]]; then    #Check if report exists
-          mv testcase/report.out ./testresults
+        if [[ -f tdd/report.out ]]; then    #Check if report exists
+          mv tdd/report.out ./testresults
         else
-          echo "report.out not found in testcase directory."
+          echo "report.out not found in tdd directory."
           exit 1 #Exit with an error code
         fi
     
@@ -101,13 +101,11 @@ jobs:
       - name: Check for Failed Tests
         id: get_fails_test
         run: |
-          sudo apt-get install xmlstarlet -y
-          FAILED_TESTS=$(xmlstarlet sel -t -v "testsuites/testsuite[failure]" -n testresults/report.out)
-
+          FAILED_TESTS=$(cat testresults/coverage.out | grep -E "FAIL\|error")
           if [[ -n "$FAILED_TESTS" ]]; then
             echo "Failed tests found: $FAILED_TESTS"
-            echo "set::output name=fail::$FAILED_TESTS"
-            exit 1  # Signal failure
+            echo "fail=$FAILED_TESTS" >> $GIHUB_ENV
+            exit 1
           else
             echo "All tests passed."
           fi
@@ -146,7 +144,8 @@ jobs:
         name: testResults
 
     - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
+      uses: codecov/codecov-action@v3
       with:
-        junit_files: "report.out"
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: testresults/report.out
