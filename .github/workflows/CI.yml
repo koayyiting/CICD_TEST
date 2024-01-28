@@ -48,13 +48,7 @@ jobs:
         cd $GITHUB_WORKSPACE/tdd
         pytest -v --cov=../microservices --junitxml=report.xml
 
-    # [Edit] Refering to tdd directory
-    - name: Display testcase directory and content
-      run: |
-        ls -la tdd           # List contents of tdd directory
-        cat testcase/report.xml   # Print contents of report.xml
-
-    # Fail Test, Create Issue
+    # Create Issue for Failed Workflow
     - if: ${{ failure() }}
       name: Create Issue on Failed workflow
       uses: dacbd/create-issue-action@main
@@ -68,7 +62,13 @@ jobs:
           Job -           `${{ github.job }}`
           status -        `${{ job.status }}`
           assignees: `${{ github.actor }}`
-        assignees: ${{ github.actor }}
+        assignees: lacsadoshaniahsantiago, koayyiting
+    
+    # [Edit] Check tdd directory
+    - name: Display tdd directory and content
+      run: |
+        ls -la tdd           # List contents of tdd directory
+        cat tdd/report.xml   # Print contents of report.xml
 
     # [Edit] Create testresults directory and move test results in new directory
     - name: Create Test Results Folder
@@ -87,14 +87,62 @@ jobs:
       with: 
         name: testResults
         path: testresults
-
-  # Showcase Test Results
+  
+  # Create Issue for Failing Test Results
   Test_Results:
+    name: Test Cases Fail
+    needs: Testing
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Remote Test Results
+        uses: actions/download-artifact@v2
+        with:
+          name: testResults
+          path: testresults
+          
+      - name: Check for Failed Tests
+        id: get_fails_test
+        run: |
+          sudo apt-get install xmlstarlet -y
+          FAILED_TESTS=$(xmlstarlet sel -t -v "testsuites/testsuite[failure]" -n testresults/report.xml)
+
+          if [[ -n "$FAILED_TESTS" ]]; then
+            echo "Failed tests found: $FAILED_TESTS"
+            echo "set::output name=fail::$FAILED_TESTS"
+            exit 1  # Signal failure
+          else
+            echo "All tests passed."
+          fi
+          
+      - name: Check Contents
+        run: |
+          echo "Contents of report.xml:"
+          cat testresults/report.xml
+          echo "Failed tests count: ${{ steps.get_fails_test.outputs.fail }}"
+
+      # Create Issue for Fail Tests
+      - name: Create Issue on Test Failure
+        if: ${{ failure() }}  # Only runs if the "Check Test Results" step failed
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: "Tests Failed in ${{ github.workflow }} "
+          body: |
+            **Failed tests have been detected.**
+
+            [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Test Results Artifact](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/download?name=testResults)
+
+            **Please investigate and address the failures.**
+          assignees: ${{ github.actor }}
+  
+  # Showcase Test Results
+  Test_Display:
     name: Save Test Results
     needs: Testing
     runs-on: ubuntu-latest
     steps:
-    
     - name: Download Remote Test Results
       uses: actions/download-artifact@v2
       with:
