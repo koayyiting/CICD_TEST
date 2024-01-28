@@ -138,7 +138,7 @@ function modifyUser(userId) {
 
 }
 
-// not working..
+// Update user details to DB
 async function submitModification() {
   event.preventDefault();
 
