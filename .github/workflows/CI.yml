@@ -2,10 +2,6 @@
 name: Continuous Integration
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
   push:
     branches:
       - main
@@ -22,11 +18,6 @@ jobs:
     needs: Build_SetUp
     runs-on: ubuntu-latest
     steps:
-    # Run installation of pytest in Testing from BuildingSetUp.yml
-    - name: Check PyTest Installation
-      if: ${{ ! needs.Build_SetUp.outputs.pytest_installed }}
-      run: pip install pytest pytest-cov
-
     # [Edit] Retrieving from Development Repository
     - name: Checkout Development
       uses: actions/checkout@v4
@@ -41,12 +32,18 @@ jobs:
         fetch: --depth=1 # Reduces clone size
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
 
-    # [Edit] Retrieve Test Cases from tdd folder and Code from microservices folder
-    - name: Use Test Cases
+    # [Edit] Test Cases
+    - name: Use Source Folder
       if: always()
-      run: |
-        cd $GITHUB_WORKSPACE/tdd
-        pytest -v --cov=../microservices --junitxml=report.xml
+      run: go get -v -t -d ./microservices
+
+    - name: Use Test Folder
+      run: go test -v ./tdd -coverageprofile=report.out
+
+    - name: Upload Coverage Report
+      uses: codecov/codec-actions@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     # Create Issue for Failed Workflow
     - if: ${{ failure() }}
@@ -67,17 +64,17 @@ jobs:
     # [Edit] Check tdd directory
     - name: Display tdd directory and content
       run: |
-        ls -la tdd           # List contents of tdd directory
-        cat tdd/report.xml   # Print contents of report.xml
+        ls -la tdd          # List contents
+        cat tdd/report.out  # Print contents of report.out
 
     # [Edit] Create testresults directory and move test results in new directory
     - name: Create Test Results Folder
       run: |
         mkdir testresults
-        if [[ -f tdd/report.xml ]]; then    #Check if report exists
-          mv tdd/report.xml ./testresults
+        if [[ -f tdd/report.out ]]; then    #Check if report exists
+          mv tdd/report.out ./testresults
         else
-          echo "report.xml not found in testcase directory."
+          echo "report.out not found in tdd directory."
           exit 1 #Exit with an error code
         fi
     
@@ -104,21 +101,19 @@ jobs:
       - name: Check for Failed Tests
         id: get_fails_test
         run: |
-          sudo apt-get install xmlstarlet -y
-          FAILED_TESTS=$(xmlstarlet sel -t -v "testsuites/testsuite[failure]" -n testresults/report.xml)
-
+          FAILED_TESTS=$(cat testresults/coverage.out | grep -E "FAIL\|error")
           if [[ -n "$FAILED_TESTS" ]]; then
             echo "Failed tests found: $FAILED_TESTS"
-            echo "set::output name=fail::$FAILED_TESTS"
-            exit 1  # Signal failure
+            echo "fail=$FAILED_TESTS" >> $GIHUB_ENV
+            exit 1
           else
             echo "All tests passed."
           fi
           
       - name: Check Contents
         run: |
-          echo "Contents of report.xml:"
-          cat testresults/report.xml
+          echo "Contents of report.out:"
+          cat testresults/report.out
           echo "Failed tests count: ${{ steps.get_fails_test.outputs.fail }}"
 
       # Create Issue for Fail Tests
@@ -149,7 +144,8 @@ jobs:
         name: testResults
 
     - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
       if: always()
+      uses: codecov/codecov-action@v3
       with:
-        junit_files: "report.xml"
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: testresults/report.out
