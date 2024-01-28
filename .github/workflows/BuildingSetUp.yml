@@ -14,8 +14,4 @@ jobs:
       uses: actions/setup-go@v4  # Setup Go after checkout
       with:
         go-version: '1.18'
-    
-    - name: Install dependencies
-      run: |
-       go mod download
 
