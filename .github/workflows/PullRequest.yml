@@ -31,9 +31,9 @@ jobs:
           echo " ${REVIEWERS} " 
 
       # Add Reviewer to Pull Request
-      # - uses: actions/checkout@v4
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Add Reviewers
         uses: madrapps/add-reviewers@v1
         with:
@@ -57,6 +57,12 @@ jobs:
             assignees: `${{ github.actor }}`
           assignees: lacsadoshaniahsantiago, koayyiting
 
+  Response_Review:
+    name: Approve Review and Merge
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_review'
+    steps:
+      # Retrieve Reviews approved
       - name: Get Review Status
         id: get_reviews
         run: |
@@ -71,28 +77,8 @@ jobs:
               ((APPROVED_N+=1))
             fi
           done
-          echo "approved_reviews=$APPROVED_N" >> $GITHUB_ENV
+          echo "APPROVED_REVIEWS=$APPROVED_N" >> $GITHUB_ENV
           echo "Approved reviews count: $APPROVED_N"
-          # APPROVED_REVIEWS=$(echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED") | length')
-          # echo "approved_reviews=$APPROVED_REVIEWS" >> $GITHUB_ENV
-          # echo "${APPROVED_REVIEWS}"
-
-  Response_Review:
-    name: Approve Review and Merge
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_review'
-    steps:
-      # Retrieve Reviews approved
-      - name: Get Review Status
-        id: get_reviews
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          REVIEWS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews")
-            
-          APPROVED_REVIEWS=$(echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED") | length')
-          echo "approved_reviews=$APPROVED_REVIEWS" >> $GITHUB_ENV
-          echo "${APPROVED_REVIEWS}"
 
       # Review Request for Changes Workflow
       - name: Request for Changes
