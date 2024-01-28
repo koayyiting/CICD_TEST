@@ -66,8 +66,13 @@ jobs:
 
           echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED")'
           APPROVED_REVIEWS = $(echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED")')
-          APPROVED_N=$(jq '. | length' <<< "$APPROVED_REVIEWS")
-          echo " $APPROVED_N "
+          APPROVED_N=0
+          for REVIEW in $(echo "$REVIEWS" | jq -r '.[].state'); do
+            if [[ $REVIEW == "APPROVED" ]]; then
+              ((APPROVED_N+=1))
+            fi
+          done
+          echo "Approved reviews count: $APPROVED_N"
           # APPROVED_REVIEWS=$(echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED") | length')
           # echo "approved_reviews=$APPROVED_REVIEWS" >> $GITHUB_ENV
           # echo "${APPROVED_REVIEWS}"
