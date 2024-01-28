@@ -69,12 +69,8 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           REVIEWS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews")
-
-          if [[ -n "$REVIEWS" ]]; then
-            APPROVED_REVIEWS=0
-          else
-            APPROVED_REVIEWS=$(echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED") | length')
-          fi
+            
+          APPROVED_REVIEWS=$(echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED") | length')
           echo "APPROVED_REVIEWS=$APPROVED_REVIEWS" >> $GITHUB_ENV
           echo "${APPROVED_REVIEWS}"
 
