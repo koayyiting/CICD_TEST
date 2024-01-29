@@ -125,7 +125,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Retrieve Approve Review Count
-        run: REVIEW_N="$ENV::APPROVED_N"
+        run: |
+          REVIEW_N="$ENV::APPROVED_N"
+          REVIEW=$(echo "$ENV::APPROVED_N")
+          echo "$REVIEW"
         shell: bash
         
       - name: Check Status of Review
