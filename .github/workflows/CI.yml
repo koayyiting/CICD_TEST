@@ -25,13 +25,27 @@ jobs:
 
     # [Edit] Test Cases
     - name: Use Test Folder
-      run: go test -v ./tdd -coverageprofile=report.out
+      run: go test -coverageprofile=report.out ./tdd/...
+
+    - name: HTML Report
+      run: |
+        go tool cover -html=report.out
 
     # Upload TDD Results in https://app.codecov.io/gh/DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        flags: unittests
+        env: TEST_ENV
+
+    - name: Create Codecov Annotation
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.actions.addAnnotations('codecov', {
+              message: 'Codecov report available: https://codecov.io/gh/${{ github.repository }}/branch/${{ github.ref }}'
+          })
 
     # Create Issue for Failed Workflow
     - if: ${{ failure() }}
@@ -70,7 +84,7 @@ jobs:
     - name: Upload Test Results
       uses: actions/upload-artifact@v2
       with: 
-        name: testResults
+        name: TDD Results
         path: testresults
   
   # Create Issue for Failing Test Results
