@@ -57,7 +57,25 @@ jobs:
             status -        `${{ job.status }}`
             assignees: `${{ github.actor }}`
           assignees: lacsadoshaniahsantiago, koayyiting
+          
+      - name: Get Review Status
+        id: get_reviews
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REVIEWS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews")
 
+          echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED")'
+          APPROVED_N=0
+          for REVIEW in $(echo "$REVIEWS" | jq -r '.[].state'); do
+            if [[ $REVIEW == "APPROVED" ]]; then
+              ((APPROVED_N+=1))
+            fi
+          done
+          echo "APPROVED_REVIEWS=$APPROVED_N" >> $GITHUB_ENV
+          echo "Approved Count env: ${{ env.APPROVED_REVIEWS }} "
+          echo "Approved reviews count: $APPROVED_N"
+          
   Response_Review:
     name: Approve Review and Merge
     runs-on: ubuntu-latest
@@ -79,6 +97,7 @@ jobs:
             fi
           done
           echo "APPROVED_REVIEWS=$APPROVED_N" >> $GITHUB_ENV
+          echo "Approved Count env: ${{ env.APPROVED_REVIEWS }} "
           echo "Approved reviews count: $APPROVED_N"
 
       # Review Request for Changes Workflow
