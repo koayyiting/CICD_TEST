@@ -72,8 +72,8 @@ jobs:
               ((APPROVED_N+=1))
             fi
           done
-          echo "APPROVED_REVIEWS=$APPROVED_N" >> $GITHUB_ENV
-          echo "Approved Count env: ${{ env.APPROVED_REVIEWS }} "
+          echo "APPROVED=$APPROVED_N" >> $GITHUB_ENV
+          echo "Approved Count env: ${{ env.APPROVED }} "
           echo "Approved reviews count: $APPROVED_N"
           
   Response_Review:
@@ -96,8 +96,8 @@ jobs:
               ((APPROVED_N+=1))
             fi
           done
-          echo "APPROVED_REVIEWS=$APPROVED_N" >> $GITHUB_ENV
-          echo "Approved Count env: ${{ env.APPROVED_REVIEWS }} "
+          echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
+          echo "Approved Count env: ${{ env.APPROVED_N }} "
           echo "Approved reviews count: $APPROVED_N"
 
       # Review Request for Changes Workflow
