@@ -20,15 +20,14 @@ jobs:
     - name: Checkout Development
       uses: actions/checkout@v4
       with:
-        fetch: --depth=1 # Reduces clone size
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Development
+        path: development
 
     # [Edit] Test Cases
     - name: Use Test Folder
-      run: go test -coverageprofile=report.out ./tdd/...
-
-    - name: HTML Report
       run: |
+        cd development
+        go test -coverageprofile=report.out ./tdd/...
         go tool cover -html=report.out
 
     # Upload TDD Results in https://app.codecov.io/gh/DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
@@ -46,6 +45,13 @@ jobs:
           github.actions.addAnnotations('codecov', {
               message: 'Codecov report available: https://codecov.io/gh/${{ github.repository }}/branch/${{ github.ref }}'
           })
+
+    # Upload test results into as artifact
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v2
+      with: 
+        name: TDD Results
+        path: testresults
 
     # Create Issue for Failed Workflow
     - if: ${{ failure() }}
@@ -80,15 +86,7 @@ jobs:
           exit 1 #Exit with an error code
         fi
     
-    # Upload test results into as artifact
-    - name: Upload Test Results
-      uses: actions/upload-artifact@v2
-      with: 
-        name: TDD Results
-        path: testresults
-  
-  # Create Issue for Failing Test Results
-  Test_Results:
+  Test_Fail:
     name: Test Cases Fail
     needs: Testing
     if: always() && ${{ success() }}
