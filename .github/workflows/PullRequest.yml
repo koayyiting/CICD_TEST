@@ -146,8 +146,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check Status of Review
         run: |
-          REVIEW_N=${{ env.APPROVED_REVIEWS }}
-          REVIEW_N=${{ needs.Response_Review.outputs.
+          REVIEW_N=${{ env.APPROVED_N }}
           if [[ REVIEW_N -ge 1 ]]; then
             echo "Approved Reviews Count: ${REVIEW_N}"
           else
