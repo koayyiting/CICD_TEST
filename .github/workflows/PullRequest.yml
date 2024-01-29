@@ -96,8 +96,8 @@ jobs:
               ((APPROVED_N+=1))
             fi
           done
-          echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
-          echo "Approved Count env: ${{ env.APPROVED_N }} "
+          echo "::set:output name=APPROVED::$APPROVED_N" >> $GITHUB_ENV
+          echo "Approved Count env: ${{ steps.get_reviews.outputs.approved }} "
           echo "Approved reviews count: $APPROVED_N"
 
       # Review Request for Changes Workflow
@@ -149,27 +149,28 @@ jobs:
             exit 1
           fi
       
-    # Retrieve Pull Request status of checks
-      - uses: actions/checkout@v4
-      - name: Get Check Status
-        if: ${{ success() }}
-        uses: danieldeichfuss/get-status@v0.0.10
-        id: get-status
-        with:
-          ref: ${{ github.sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+    # # Retrieve Pull Request status of checks
+    #   - uses: actions/checkout@v4
+    #   - name: Get Check Status
+    #     if: ${{ success() }}
+    #     uses: danieldeichfuss/get-status@v0.0.10
+    #     id: get-status
+    #     with:
+    #       ref: ${{ github.sha }}
+    #       token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Add automerge label to be able to run pascalgn/automerge-action@v0.16.2 successfully 
-      - uses: actions/checkout@v3
-      - name: Label Pull Request as automerge
-        uses: actions-ecosystem/action-add-labels@v1
-        if: ${{ success() }} && ${{ steps.get-status.outputs.all-checks-completed == 'true' && steps.get-status.outputs.all-checks-passed == 'true' }} && ${{ startsWith(github.event.comment.body, '/add-labels') }}
-        with:
-          labels: automerge
+    #   # Add automerge label to be able to run pascalgn/automerge-action@v0.16.2 successfully 
+    #   - uses: actions/checkout@v3
+    #   - name: Label Pull Request as automerge
+    #     uses: actions-ecosystem/action-add-labels@v1
+    #     if: ${{ success() }} && ${{ steps.get-status.outputs.all-checks-completed == 'true' && steps.get-status.outputs.all-checks-passed == 'true' }} && ${{ startsWith(github.event.comment.body, '/add-labels') }}
+    #     with:
+    #       labels: automerge
 
       # Merge Pull Request action 
       - uses: actions/checkout@v4
       - name: Auto Merge Pull Request
+        if: ${{ success() }}
         # uses: "pascalgn/automerge-action@v0.16.2"
         # env:
         #   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
