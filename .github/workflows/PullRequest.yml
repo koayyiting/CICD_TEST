@@ -80,9 +80,10 @@ jobs:
           done
           echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
           echo "Approved reviews count: $APPROVED_N"
+  
       - name: Check Environment Approve
         run: |
-          echo " Approved N ENV: ${{ env.APPROVED_N }}
+          echo "Approved_N ENV: ${{ env.APPROVED_N }} "
           
       # Review Request for Changes Workflow
       - name: Request for Changes
@@ -125,7 +126,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check Status of Review
         run: |
-          REVIEW_N=${{ env.APPROVED_N }}
+          REVIEW_N=$ENV::APPROVED_N #Retrieve Env - APPROVED_N
           if [[ REVIEW_N -ge 1 ]]; then
             echo "Approved Reviews Count: ${REVIEW_N}"
           else
