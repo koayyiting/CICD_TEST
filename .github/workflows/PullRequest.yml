@@ -72,10 +72,12 @@ jobs:
               ((APPROVED_N+=1))
             fi
           done
-          echo "APPROVED=$APPROVED_N" >> $GITHUB_ENV
-          echo "set::output name=approved::$APPROVED_N"
-          echo "Approved Count env: ${{ env.APPROVED }} "
+          echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
           echo "Approved reviews count: $APPROVED_N"
+
+      - name: Check
+        run: |
+           echo "Approved Count env: ${{ env.APPROVED_N }} "
           
   Response_Review:
     name: Approve Review and Merge
@@ -100,12 +102,8 @@ jobs:
               ((APPROVED_N+=1))
             fi
           done
-          echo "set::output name=APPROVED::$APPROVED_N"
+          echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
           echo "Approved reviews count: $APPROVED_N"
-
-      - name: Check
-        run: |
-          echo "Approved Count env: ${{ steps.get_reviews.outputs.approved }}"
 
       # Review Request for Changes Workflow
       - name: Request for Changes
