@@ -17,4 +17,4 @@ jobs:
     - name: Set Up Go
       uses: actions/setup-go@v4  # Setup Go after checkout
       with:
-        go-version: '1.18'
+        go-version: '1.21.3'
