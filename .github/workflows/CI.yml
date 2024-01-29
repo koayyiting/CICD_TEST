@@ -3,7 +3,7 @@ name: Continuous Integration
 
 on:
   push:
-    
+  
 jobs:
   # Set up necessary installs
   Build_SetUp:
@@ -24,17 +24,14 @@ jobs:
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Development
 
     # [Edit] Test Cases
-    - name: Use Source Folder
-      if: always()
-      run: go get -v -t -d ./microservices
-
     - name: Use Test Folder
       run: go test -v ./tdd -coverageprofile=report.out
 
-    - name: Upload Coverage Report
+    # Upload TDD Results in https://app.codecov.io/gh/DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
+    - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     # Create Issue for Failed Workflow
     - if: ${{ failure() }}
