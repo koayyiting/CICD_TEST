@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check Status of Review
         run: |
-          REVIEW_N=$ENV::APPROVED_N #Retrieve Env - APPROVED_N
+          REVIEW_N="$ENV::APPROVED_N" #Retrieve Env - APPROVED_N
           if [[ REVIEW_N -ge 1 ]]; then
             echo "Approved Reviews Count: ${REVIEW_N}"
           else
