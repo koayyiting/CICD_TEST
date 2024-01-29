@@ -80,7 +80,10 @@ jobs:
           done
           echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
           echo "Approved reviews count: $APPROVED_N"
-
+      - name: Check Environment Approve
+        run: |
+          echo " Approved N ENV: ${{ env.APPROVED_N }}
+          
       # Review Request for Changes Workflow
       - name: Request for Changes
         if: github.event.review.state == 'changes_requested'
