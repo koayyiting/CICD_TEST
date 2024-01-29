@@ -80,7 +80,7 @@ jobs:
   Test_Results:
     name: Test Cases Fail
     needs: Testing
-    if: always()
+    if: always() && ${{ success() }}
     runs-on: ubuntu-latest
     steps:
       - name: Download Remote Test Results
