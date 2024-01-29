@@ -40,6 +40,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           reviewers: ${{ env.REVIEWERS }}
           re-request-when-changes-requested: true
+          re-request-when-approved: true
 
       # Create Issue for Failed Workflow
       - if: ${{ failure() }}
