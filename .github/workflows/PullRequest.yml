@@ -58,36 +58,12 @@ jobs:
             assignees: `${{ github.actor }}`
           assignees: lacsadoshaniahsantiago, koayyiting
           
-      - name: Get Review Status
-        id: get_reviews
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          REVIEWS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews")
-
-          echo "$REVIEWS" | jq -r '.[] | select(.state == "APPROVED")'
-          APPROVED_N=0
-          for REVIEW in $(echo "$REVIEWS" | jq -r '.[].state'); do
-            if [[ $REVIEW == "APPROVED" ]]; then
-              ((APPROVED_N+=1))
-            fi
-          done
-          echo "APPROVED_N=$APPROVED_N" >> $GITHUB_ENV
-          echo "Approved reviews count: $APPROVED_N"
-
-      - name: Check
-        run: |
-           echo "Approved Count env: ${{ env.APPROVED_N }} "
-          
   Response_Review:
     name: Approve Review and Merge
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request_review'
     steps:
       # Retrieve Reviews approved
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get Review Status
         id: get_reviews
         run: |
