@@ -150,9 +150,19 @@ jobs:
       # Merge Pull Request action 
       - uses: actions/checkout@v4
       - name: Auto Merge Pull Request
-        uses: "pascalgn/automerge-action@v0.16.2"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        # uses: "pascalgn/automerge-action@v0.16.2"
+        # env:
+        #   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        # with:
+        #   merge_commit_message: "${{ github.event.pull_request.number }} - Merged PR#${{ github.event.pull_request.number }} "
+        #   merge_method: merge
+        uses: actions/github-script@v6
         with:
-          merge_commit_message: "${{ github.event.pull_request.number }} - Merged PR#${{ github.event.pull_request.number }} "
-          merge_method: merge
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.pull_request.number }},  // Get PR number from the created PR
+              merge_method: "merge"
+            })
