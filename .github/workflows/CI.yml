@@ -32,7 +32,7 @@ jobs:
       run: go test -v ./tdd -coverageprofile=report.out
 
     - name: Upload Coverage Report
-      uses: codecov/codec-actions@v3
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 
