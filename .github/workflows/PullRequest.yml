@@ -124,11 +124,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Retrieve Approve Review Count
+        run: REVIEW_N="$ENV::APPROVED_N"
+        shell: bash
+        
       - name: Check Status of Review
         run: |
-          REVIEW_N="$ENV::APPROVED_N" #Retrieve Env - APPROVED_N
-          if [[ REVIEW_N -ge 1 ]]; then
-            echo "Approved Reviews Count: ${REVIEW_N}"
+          if [[ $REVIEW_N -ge 1 ]]; then
+            echo "Approved Reviews Count: $REVIEW_N"
           else
             echo "There is no approved reviews. Do not continue next steps" 
             exit 1
