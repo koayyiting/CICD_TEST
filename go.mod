@@ -1,4 +1,4 @@
-module DevOps_Oct2023_TeamB_Development
+module DevOps_Oct2023_TeamB_Assignment
 
 go 1.21.3
 
