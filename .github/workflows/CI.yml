@@ -25,7 +25,7 @@ jobs:
     # [Edit] Test Cases
     - name: Use Test Folder
       run: |
-        go test -v -coverprofile=report.out ./tdd/...
+        go test -coverprofile=report.out ./tdd/...
 
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v3
