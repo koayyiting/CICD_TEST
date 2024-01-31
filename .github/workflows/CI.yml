@@ -32,10 +32,7 @@ jobs:
     # [Edit] Test Cases
     - name: Use Test Folder
       run: |
-        go test -coverprofile=report.out ./...
-
-    - name: Build
-      run: go build -v ./...
+        go test -v -coverprofile=report.out ./tdd/...
       
     - name: Test
       uses: robherley/go-test-action@v0.1.0
