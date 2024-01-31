@@ -27,6 +27,12 @@ jobs:
       run: |
         go test -coverprofile=report.out ./tdd/...
 
+    - name: Build
+      run: go build -v ./...
+      
+    - name: Test
+      uses: robherley/go-test-action@v0.1.0
+      
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v3
       with:
@@ -34,24 +40,24 @@ jobs:
         path: report.out
 
     # Upload TDD Results in https://app.codecov.io/gh/DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        flags: unittests
-        env: TEST_ENV
+    # - name: Upload coverage reports to Codecov
+    #   uses: codecov/codecov-action@v3
+    #   env:
+    #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    #     flags: unittests
+    #     env: TEST_ENV
 
-    - name: Create Codecov Annotation
-      uses: actions/github-script@v4
-      with:
-        script: |
-          github.actions.addAnnotations('codecov', {
-              message: 'Codecov report available: https://codecov.io/gh/${{ github.repository }}/branch/${{ github.ref }}'
-          })
+    # - name: Create Codecov Annotation
+    #   uses: actions/github-script@v4
+    #   with:
+    #     script: |
+    #       github.actions.addAnnotations('codecov', {
+    #           message: 'Codecov report available: https://codecov.io/gh/${{ github.repository }}/branch/${{ github.ref }}'
+    #       })
 
-    - name: Fail on Upload
-      if: failure()
-      run: exit 1 # Stop workflow on test failure
+    # - name: Fail on Upload
+    #   if: failure()
+    #   run: exit 1 # Stop workflow on test failure
       
     # Create Issue for Failed Workflow
     # - if: ${{ failure() }}
@@ -78,7 +84,7 @@ jobs:
   Test_Fail:
     name: Test Cases Fail
     needs: Testing
-    if: always() && ${{ success() }}
+    if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
       - name: Download Remote Test Results
