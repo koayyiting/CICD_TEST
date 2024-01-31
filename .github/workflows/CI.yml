@@ -34,8 +34,7 @@ jobs:
     - name: Use Test Folder
       working-directory: ./tdd
       run: |
-        go test -v -coverprofile=report.out ./...
-      
+        go test -v -coverprofile=report.out
     - name: Test
       uses: robherley/go-test-action@v0.1.0
       
