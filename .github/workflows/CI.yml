@@ -29,14 +29,12 @@ jobs:
     needs: Build_SetUp
     runs-on: ubuntu-latest
     steps:
-    - name: Set to TDD Folder
-      run: |
-        cd tdd
-        
+    - uses: actions/checkout@v4
     # [Edit] Test Cases
     - name: Use Test Folder
+      working-directory: ./tdd
       run: |
-        go test -v -coverprofile=report.out ./tdd/...
+        go test -v -coverprofile=report.out ./...
       
     - name: Test
       uses: robherley/go-test-action@v0.1.0
