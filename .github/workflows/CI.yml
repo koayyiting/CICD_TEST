@@ -28,7 +28,7 @@ jobs:
     - name: Checkout Development
       uses: actions/checkout@v4
       with:
-        repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Development
+        repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
 
     # [Edit] Test Cases
     - name: Use Test Folder
