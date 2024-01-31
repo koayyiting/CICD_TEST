@@ -15,9 +15,13 @@ jobs:
         python-version: '3.10'
 
     - name: Set Up Go
-      uses: actions/setup-go@v4  # Setup Go after checkout
+      uses: actions/setup-go@v5  # Setup Go after checkout
       with:
-        go-version: 1.21
+        go-version-file: 'path/to/go.mod'
+        go-version: 'stable'
+        cache-dependency-path: |
+                subdir/go.sum
+                tools/go.sum
 
     - name: Go Mod Dependencies
       run: go mod download
