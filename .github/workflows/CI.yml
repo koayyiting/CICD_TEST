@@ -14,6 +14,11 @@ jobs:
         uses: actions/setup-go@v5  # Setup Go after checkout
         with:
           go-version: '~1.21.0'
+      # [Edit] Retrieving from Development Repository
+      - name: Checkout Development
+        uses: actions/checkout@v4
+        with:
+          repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
 
       - name: Go Mod Dependencies
         run: go mod download
@@ -24,12 +29,6 @@ jobs:
     needs: Build_SetUp
     runs-on: ubuntu-latest
     steps:
-    # [Edit] Retrieving from Development Repository
-    - name: Checkout Development
-      uses: actions/checkout@v4
-      with:
-        repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
-
     # [Edit] Test Cases
     - name: Use Test Folder
       run: |
