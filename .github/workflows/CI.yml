@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
-
+          
       - name: Go Mod Dependencies
         run: go mod download
   
@@ -29,6 +29,10 @@ jobs:
     needs: Build_SetUp
     runs-on: ubuntu-latest
     steps:
+    - name: Set to TDD Folder
+      run: |
+        cd tdd
+        
     # [Edit] Test Cases
     - name: Use Test Folder
       run: |
