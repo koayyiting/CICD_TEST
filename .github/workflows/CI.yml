@@ -30,8 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Go Mod Dependencies
-        run: go mod download
       # [Edit] Test Cases
       - name: Use Test Folder
         working-directory: ./tdd
