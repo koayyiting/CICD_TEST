@@ -29,20 +29,22 @@ jobs:
     needs: Build_SetUp
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    # [Edit] Test Cases
-    - name: Use Test Folder
-      working-directory: ./tdd
-      run: |
-        go test -coverprofile=report.out
-    - name: Test
-      uses: robherley/go-test-action@v0.1.0
-      
-    - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
-      with:
-        name: TDD Coverage Report
-        path: report.out
+      - uses: actions/checkout@v4
+      - name: Go Mod Dependencies
+        run: go mod download
+      # [Edit] Test Cases
+      - name: Use Test Folder
+        working-directory: ./tdd
+        run: |
+          go test -v ./.. -coverprofile=report.out
+      - name: Test
+        uses: robherley/go-test-action@v0.1.0
+        
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: TDD Coverage Report
+          path: report.out
 
     # Upload TDD Results in https://app.codecov.io/gh/DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
     # - name: Upload coverage reports to Codecov
