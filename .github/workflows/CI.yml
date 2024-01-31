@@ -54,20 +54,20 @@ jobs:
         path: testresults
 
     # Create Issue for Failed Workflow
-    - if: ${{ failure() }}
-      name: Create Issue on Failed workflow
-      uses: dacbd/create-issue-action@main
-      with:
-        token: ${{ github.token }}
-        title: Issue - `${{ github.workflow }}` failed.
-        body: |
-          [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          [Codebase](https://github.com/${{ github.repository }}/tree/${{ github.sha }})
-          Workflow name - `${{ github.workflow }}`
-          Job -           `${{ github.job }}`
-          status -        `${{ job.status }}`
-          assignees: `${{ github.actor }}`
-        assignees: lacsadoshaniahsantiago, koayyiting
+    # - if: ${{ failure() }}
+    #   name: Create Issue on Failed workflow
+    #   uses: dacbd/create-issue-action@main
+    #   with:
+    #     token: ${{ github.token }}
+    #     title: Issue - `${{ github.workflow }}` failed.
+    #     body: |
+    #       [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+    #       [Codebase](https://github.com/${{ github.repository }}/tree/${{ github.sha }})
+    #       Workflow name - `${{ github.workflow }}`
+    #       Job -           `${{ github.job }}`
+    #       status -        `${{ job.status }}`
+    #       assignees: `${{ github.actor }}`
+    #     assignees: lacsadoshaniahsantiago, koayyiting
     
     # [Edit] Check tdd directory
     - name: Display tdd directory and content
@@ -114,20 +114,20 @@ jobs:
           echo "Failed tests count: ${{ steps.get_fails_test.outputs.fail }}"
 
       # Create Issue for Fail Tests
-      - name: Create Issue on Test Failure
-        if: ${{ failure() }}  # Only runs if the "Check Test Results" step failed
-        uses: dacbd/create-issue-action@main
-        with:
-          token: ${{ github.token }}
-          title: "Tests Failed in ${{ github.workflow }} "
-          body: |
-            **Failed tests have been detected.**
+      # - name: Create Issue on Test Failure
+      #   if: ${{ failure() }}  # Only runs if the "Check Test Results" step failed
+      #   uses: dacbd/create-issue-action@main
+      #   with:
+      #     token: ${{ github.token }}
+      #     title: "Tests Failed in ${{ github.workflow }} "
+      #     body: |
+      #       **Failed tests have been detected.**
 
-            [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            [Test Results Artifact](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/download?name=testResults)
+      #       [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+      #       [Test Results Artifact](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/download?name=testResults)
 
-            **Please investigate and address the failures.**
-          assignees: ${{ github.actor }}
+      #       **Please investigate and address the failures.**
+      #     assignees: ${{ github.actor }}
 
   # Showcase Test Results
   Test_Display:
