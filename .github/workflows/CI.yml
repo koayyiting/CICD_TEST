@@ -8,7 +8,15 @@ jobs:
   # Set up necessary installs
   Build_SetUp:
     name: Build SetUp
-    uses: ./.github/workflows/BuildingSetUp.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Up Go
+        uses: actions/setup-go@v5  # Setup Go after checkout
+        with:
+          go-version: '~1.21.0'
+
+      - name: Go Mod Dependencies
+        run: go mod download
   
   # Reference to Test Cases in repository
   Testing:
