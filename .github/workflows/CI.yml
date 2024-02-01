@@ -25,7 +25,6 @@ jobs:
       - name: Install dependencies
         run: |
           go mod download
-          go get ./microservices
   
       # [Edit] Test Cases
       - name: Use Test Folder
