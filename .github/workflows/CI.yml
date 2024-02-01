@@ -13,27 +13,25 @@ jobs:
       - name: Set Up Go
         uses: actions/setup-go@v5  # Setup Go after checkout
         with:
-          go-version: '~1.21.0'
+          go-version: '1.21.x'
+          cache-dependency-path: subdir/go.sum
+
       # [Edit] Retrieving from Development Repository
       - name: Checkout Development
         uses: actions/checkout@v4
         with:
           repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Assignment
-          
-      - name: Go Mod Dependencies
-        run: go mod download
+
+      - name: Install dependencies
+        run: |
+          go mod download
+          go get .
   
-  # Reference to Test Cases in repository
-  Testing:
-    name: Run Test Cases
-    needs: Build_SetUp
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       # [Edit] Test Cases
       - name: Use Test Folder
         working-directory: ./tdd
         run: |
+          go build -v ./..
           go test -v -coverprofile=report.out ./..
       - name: Test
         uses: robherley/go-test-action@v0.1.0
