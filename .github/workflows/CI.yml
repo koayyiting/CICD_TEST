@@ -30,7 +30,7 @@ jobs:
       - name: Run Go Files
         working-directory: ./microservices
         run: |
-          for dir in ./microservices/*/; do
+          for dir in ./*/; do
             go build -v "$dir"
           done
           
