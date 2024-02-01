@@ -30,8 +30,9 @@ jobs:
       - name: Use Test Folder
         working-directory: ./tdd
         run: |
-          go build -v ./../microservices
-          go test -v -coverprofile=report.out ./..
+          go build -i -v ./microservices
+          go test -v -coverprofile=report.out -i ./..
+          
       - name: Test
         uses: robherley/go-test-action@v0.1.0
         
