@@ -30,8 +30,8 @@ jobs:
       - name: Use Test Folder
         working-directory: ./microservices
         run: |
-          go build -v ./microservices/account
-          go build -v ./microservices/record
+          go build -v ./account
+          go build -v ./record
           go test -v -coverprofile=report.out ./..
           
       - name: Test
