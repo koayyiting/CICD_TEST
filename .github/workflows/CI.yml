@@ -30,7 +30,9 @@ jobs:
       - name: Run Go Files
         working-directory: ./microservices
         run: |
-          go build -i -v ./...
+          for dir in ./microservices/*/; do
+            go build -v "$dir"
+          done
           
       - name: Run Go Test Files
         working-directory: ./tdd
