@@ -34,7 +34,7 @@ jobs:
       - name: Use Test Folder
         working-directory: ./tdd
         run: |
-          go test -v ./.. -coverprofile=report.out
+          go test -v -coverprofile=report.out ./..
       - name: Test
         uses: robherley/go-test-action@v0.1.0
         
@@ -80,38 +80,38 @@ jobs:
     #       assignees: `${{ github.actor }}`
     #     assignees: lacsadoshaniahsantiago, koayyiting
     
-    # [Edit] Check tdd directory
-    - name: Display tdd directory and content
-      run: |
-        ls -la tdd          # List contents
-        cat tdd/report.out  # Print contents of report.out
+  #   # [Edit] Check tdd directory
+  #   - name: Display tdd directory and content
+  #     run: |
+  #       ls -la tdd          # List contents
+  #       cat tdd/report.out  # Print contents of report.out
     
-  Test_Fail:
-    name: Test Cases Fail
-    needs: Testing
-    if: ${{ success() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Remote Test Results
-        uses: actions/download-artifact@v2
-        with:
-          name: testResults
-          path: testresults
+  # Test_Fail:
+  #   name: Test Cases Fail
+  #   needs: Testing
+  #   if: ${{ success() }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Remote Test Results
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: testResults
+  #         path: testresults
           
-      - name: Check for Failed Tests
-        id: get_fails_test
-        run: |
-          FAILED_TESTS=$(cat testresults/coverage.out | grep -E "FAIL\|error")
-          if [[ -n "$FAILED_TESTS" ]]; then
-            echo "Failed tests found: $FAILED_TESTS"
-            echo "fail=$FAILED_TESTS" >> $GIHUB_ENV
-            exit 1
-          else
-            echo "All tests passed."
-          fi
-          echo "Contents of report.out:"
-          cat testresults/report.out
-          echo "Failed tests count: ${{ steps.get_fails_test.outputs.fail }}"
+  #     - name: Check for Failed Tests
+  #       id: get_fails_test
+  #       run: |
+  #         FAILED_TESTS=$(cat testresults/coverage.out | grep -E "FAIL\|error")
+  #         if [[ -n "$FAILED_TESTS" ]]; then
+  #           echo "Failed tests found: $FAILED_TESTS"
+  #           echo "fail=$FAILED_TESTS" >> $GIHUB_ENV
+  #           exit 1
+  #         else
+  #           echo "All tests passed."
+  #         fi
+  #         echo "Contents of report.out:"
+  #         cat testresults/report.out
+  #         echo "Failed tests count: ${{ steps.get_fails_test.outputs.fail }}"
 
       # Create Issue for Fail Tests
       # - name: Create Issue on Test Failure
@@ -130,19 +130,19 @@ jobs:
       #     assignees: ${{ github.actor }}
 
   # Showcase Test Results
-  Test_Display:
-    name: Save Test Results
-    needs: Testing
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download Remote Test Results
-      uses: actions/download-artifact@v2
-      with:
-        name: testResults
+  # Test_Display:
+  #   name: Save Test Results
+  #   needs: Testing
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Download Remote Test Results
+  #     uses: actions/download-artifact@v2
+  #     with:
+  #       name: testResults
 
-    - name: Publish Test Results
-      if: always()
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: testresults/report.out
+  #   - name: Publish Test Results
+  #     if: always()
+  #     uses: codecov/codecov-action@v3
+  #     with:
+  #       token: ${{ secrets.CODECOV_TOKEN }}
+  #       file: testresults/report.out
