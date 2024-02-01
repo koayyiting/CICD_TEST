@@ -27,12 +27,15 @@ jobs:
           go mod download
   
       # [Edit] Test Cases
-      - name: Use Test Folder
-        working-directory: ./microservices
+      - name: Run Go Files
+        working-directory: ./
         run: |
-          go build -v ./account
-          go build -v ./record
-          go test -v -coverprofile=report.out ./..
+          go build -i -v ./microservices
+
+      - name: Run Go Test Files
+        working-directory: ./tdd\
+        run: |
+          go test -v -coverprofile=report.out ./...
           
       - name: Test
         uses: robherley/go-test-action@v0.1.0
