@@ -28,7 +28,7 @@ jobs:
   
       # [Edit] Test Cases
       - name: Use Test Folder
-        working-directory: ./tdd
+        working-directory: ./microservices
         run: |
           go build -v ./microservices/account
           go build -v ./microservices/record
