@@ -28,12 +28,12 @@ jobs:
   
       # [Edit] Test Cases
       - name: Run Go Files
-        working-directory: ./
+        working-directory: ./microservices
         run: |
-          go build -i -v ./microservices
-
+          go build -i -v ./...
+          
       - name: Run Go Test Files
-        working-directory: ./tdd\
+        working-directory: ./tdd
         run: |
           go test -v -coverprofile=report.out ./...
           
