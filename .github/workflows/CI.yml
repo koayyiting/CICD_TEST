@@ -33,7 +33,6 @@ jobs:
           done
           
       - name: Run Go Test Files
-        working-directory: ./tests
         run: |
           for dir in $(find . -type d -name '*_test'); do
             cd $dir
