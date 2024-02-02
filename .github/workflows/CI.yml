@@ -24,21 +24,21 @@ jobs:
         run: |
           go mod download
   
-      # [Edit] Test Cases
-      - name: Run Go Files
-        working-directory: ./microservices
-        run: |
-          for dir in ./*/; do
-            go build -v "$dir"
-          done
+      # # [Edit] Test Cases
+      # - name: Run Go Files
+      #   working-directory: ./microservices
+      #   run: |
+      #     for dir in ./*/; do
+      #       go build -v "$dir"
+      #     done
           
-      - name: Run Go Test Files
-        run: |
-          for dir in $(find . -type d -name '*_test'); do
-            cd $dir
-            go test -v -cover -coverprofile=coverage.out ./...
-            cd -
-          done
+      # - name: Run Go Test Files
+      #   run: |
+      #     for dir in $(find . -type d -name '*_test'); do
+      #       cd $dir
+      #       go test -v -cover -coverprofile=coverage.out ./...
+      #       cd -
+      #     done
           
       - name: Go Test Action
         uses: robherley/go-test-action@v0.1.0
