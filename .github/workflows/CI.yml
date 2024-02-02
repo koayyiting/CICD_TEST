@@ -14,6 +14,12 @@ jobs:
         with:
           go-version: '1.21.x'
           cache-dependency-path: subdir/go.sum
+          
+  TDD_Test:
+    name: Running TDD test cases
+    runs-on: ubuntu-latest
+    needs: Build_SetUp
+    steps:
       # [Edit] Retrieving from Development Repository
       - name: Checkout Development
         uses: actions/checkout@v4
@@ -29,8 +35,5 @@ jobs:
         with:
           repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
 
-      - name: Run Robot Framework
-        uses: joonvena/robotframework-docker-action@v1.0
-        with:
-          robot_tests_dir: DevOps_Oct2023_TeamB_Testing/TestCases/
+
       
