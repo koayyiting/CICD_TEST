@@ -8,12 +8,28 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"testing"
+
+	"github.com/DATA-DOG/go-sqlmock"
 )
 
 func TestCreateAccHandler(t *testing.T) {
-	//initialize the database connection
-	account.DB()
+	// Create a new mock database connection
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	// Replace the actual database connection with the mock
+	account.SetDB(db)
+
+	// Set up expected database query and result
+	mock.ExpectPrepare("INSERT INTO Account").
+		ExpectExec().
+		WithArgs("testacc", "testpwd", "User", "Pending").
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	newAcc := account.Account{
 		Username:  "testacc",
@@ -47,11 +63,34 @@ func TestCreateAccHandler(t *testing.T) {
 	if rr.Body.String() != expected {
 		t.Errorf("Handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
 	}
+
+	// Verify that the expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+
+	defer mock.ExpectationsWereMet() // Ensure expectations are checked even if the test fails early
 }
 
 func TestGetAccHandler(t *testing.T) {
 	username := "testacc"
 	password := "testpwd"
+
+	// Create a new mock database connection
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	// Replace the actual database connection with the mock
+	account.SetDB(db)
+
+	// Set up expectations for the query and scan to return sql.ErrNoRows
+	mock.ExpectQuery(regexp.QuoteMeta("SELECT AccID, Username, Password, AccType, AccStatus FROM Account WHERE Username = ? AND Password = ?")).
+		WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).
+		WillReturnRows(sqlmock.NewRows([]string{"AccID", "Username", "Password", "AccType", "AccStatus"}).
+			AddRow(1, "testacc", "testpwd", "user", "active")) // Simulating a successful row
 
 	req, err := http.NewRequest("GET", fmt.Sprintf("/api/v1/accounts?username=%s&password=%s", username, password), nil)
 	if err != nil {
@@ -77,6 +116,11 @@ func TestGetAccHandler(t *testing.T) {
 	expectedUsername := "testacc"
 	if acc.Username != expectedUsername {
 		t.Errorf("Handler returned unexpected username: got %v want %v", acc.Username, expectedUsername)
+	}
+
+	// Verify that the expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
 
