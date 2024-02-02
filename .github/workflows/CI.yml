@@ -34,6 +34,7 @@ jobs:
       uses: joonvena/robotframework-docker-action@v1.0
       with:
         robot_tests_dir: TestCases
+        image: ppodgorsek/robot-framework:3.4.1
     - name: Store BDD test report
       uses: actions/upload-artifact@v1
       if: always()
