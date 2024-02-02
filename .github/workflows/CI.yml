@@ -44,6 +44,9 @@ jobs:
         uses: robherley/go-test-action@v0.1.0
         with:
           args: -v -cover -coverprofile=coverage.out ./...
+
+      - name: Display Test Output
+        run: cat coverage.out
         
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
