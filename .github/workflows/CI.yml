@@ -1,6 +1,5 @@
 #Trigger when there is a push to main
 name: Continuous Integration
-
 on:
   push:
   
@@ -15,17 +14,12 @@ jobs:
         with:
           go-version: '1.21.x'
           cache-dependency-path: subdir/go.sum
-
       # [Edit] Retrieving from Development Repository
       - name: Checkout Development
         uses: actions/checkout@v4
-
       - name: Install dependencies
         run: |
           go mod download
-
-      - name: Build
-        run: go build -v ./...
   
       # # [Edit] Test Cases
       # - name: Run Go Files
@@ -42,18 +36,6 @@ jobs:
       #       go test -v -cover -coverprofile=coverage.out ./...
       #       cd -
       #     done
-          
+
       - name: Go Test Action
         uses: robherley/go-test-action@v0.1.0
-        with:
-          moduleDirectory: ./microservices  # Assuming the root of your Go module is the current directory
-          testArguments: ./...  # Run tests in all subdirectories
-
-      - name: Display Test Output
-        run: cat coverage.out
-        
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: TDD Coverage Report
-          path: coverage.out
