@@ -31,10 +31,11 @@ jobs:
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
 
     - name: Run BDD tests
-      uses: joonvena/robotframework-docker-action@v1.0
-      with:
-        robot_tests_dir: TestCases
-        image: ppodgorsek/robot-framework:3.4.1
+      run: |
+        docker run --rm \
+          -v ${{ github.workspace }}:/opt/robotframework/tests \
+          joonvena/robotframework-docker-action:latest \
+          TestCases
     - name: Store BDD test report
       uses: actions/upload-artifact@v1
       if: always()
