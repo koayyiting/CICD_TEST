@@ -11,4 +11,3 @@ func main() {
 	account.InitHTTPServer()
 	record.InitHTTPServer()
 }
-
