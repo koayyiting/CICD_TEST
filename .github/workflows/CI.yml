@@ -33,7 +33,7 @@ jobs:
           done
           
       - name: Run Go Test Files
-        working-directory: ./tdd
+        working-directory: ./tests
         run: |
           go test -v -coverprofile=report.out ./...
           
