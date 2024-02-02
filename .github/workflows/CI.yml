@@ -31,4 +31,6 @@ jobs:
 
       - name: Run Robot Framework
         uses: joonvena/robotframework-docker-action@v1.0
+        with:
+          robot_tests_dir: DevOps_Oct2023_TeamB_Testing/TestCases/
       
