@@ -5,7 +5,7 @@ on:
   
 jobs:
   # Set up necessary installs
-  Build_SetUp:
+  Build_SetUp_and_TDD:
     name: Build SetUp
     runs-on: ubuntu-latest
     steps:
@@ -14,12 +14,7 @@ jobs:
         with:
           go-version: '1.21.x'
           cache-dependency-path: subdir/go.sum
-          
-  TDD_Test:
-    name: Running TDD test cases
-    runs-on: ubuntu-latest
-    needs: Build_SetUp
-    steps:
+  
       # [Edit] Retrieving from Development Repository
       - name: Checkout Development
         uses: actions/checkout@v4
