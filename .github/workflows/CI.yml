@@ -35,7 +35,7 @@ jobs:
       - name: Run Go Test Files
         working-directory: ./tests
         run: |
-          go test -v -coverprofile=coverage.out ./...
+          go test -v -cover -coverprofile=coverage.out ./...
           
       - name: Test
         uses: robherley/go-test-action@v0.1.0
