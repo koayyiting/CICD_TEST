@@ -45,9 +45,6 @@ jobs:
           
       - name: Go Test Action
         uses: robherley/go-test-action@v0.1.0
-        with:
-          omitUntestedPackages: true  # Omit packages with no tests
-          omitPie: true              # Disable pie chart
         
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
