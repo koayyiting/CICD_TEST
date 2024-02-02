@@ -1,4 +1,4 @@
-// record.go
+// record_test.go
 package record
 
 import (
