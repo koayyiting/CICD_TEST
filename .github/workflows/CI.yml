@@ -30,5 +30,30 @@ jobs:
         with:
           repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
 
+      - name: Run BDD tests
+        uses: joonvena/robotframework-docker-action@v1.0
+        with:
+          robot_tests_dir: TestCases
+      - name: Store BDD test report
+      uses: actions/upload-artifact@v1
+      if: always()
+      with:
+        name: reports
+        path: reports
+
+  BDD_Report:
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download test report
+      uses: actions/download-artifact@v1
+      with:
+        name: reports
+    - name: Output report
+      uses: joonvena/robotframework-reporter-action@v2
+      with:
+        gh_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       
