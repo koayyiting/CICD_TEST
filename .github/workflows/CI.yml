@@ -48,6 +48,7 @@ jobs:
         with:
           moduleDirectory: ./microservices  # Assuming the root of your Go module is the current directory
           testArguments: ./...  # Run tests in all subdirectories
+          args: -v -json ./...
         
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
