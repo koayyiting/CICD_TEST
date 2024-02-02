@@ -1,4 +1,4 @@
-package test
+package tests
 
 import (
 	"CICD_TEST/microservices/record" //change here

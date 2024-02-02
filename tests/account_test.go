@@ -1,5 +1,5 @@
 // account_test.go
-package test
+package tests
 
 import (
 	"CICD_TEST/microservices/account" //change here
