@@ -33,9 +33,9 @@ jobs:
           done
           
       - name: Run Go Test Files
-        working-directory: ./tdd
+        working-directory: ./tests
         run: |
-          go test -v -coverprofile=report.out ./...
+          go test -v -coverprofile=coverage.out ./...
           
       - name: Test
         uses: robherley/go-test-action@v0.1.0
@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: TDD Coverage Report
-          path: report.out
+          path: coverage.out
