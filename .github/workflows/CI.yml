@@ -40,10 +40,14 @@ jobs:
             cd -
           done
           
-      - name: Test
+      - name: Go Test Action
         uses: robherley/go-test-action@v0.1.0
         with:
           args: -v -cover -coverprofile=coverage.out ./...
+          moduleDirectory: .
+          testArguments: ./...
+          omitUntestedPackages: false
+          omitPie: false
 
       - name: Display Test Output
         run: cat coverage.out
