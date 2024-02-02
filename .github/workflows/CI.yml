@@ -9,44 +9,44 @@ jobs:
     name: Build SetUp
     runs-on: ubuntu-latest
     steps:
-      - name: Set Up Go
-        uses: actions/setup-go@v5  # Setup Go after checkout
-        with:
-          go-version: '1.21.x'
-          cache-dependency-path: subdir/go.sum
-  
-      # [Edit] Retrieving from Development Repository
-      - name: Checkout Development
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          go mod download
+    - name: Set Up Go
+      uses: actions/setup-go@v5  # Setup Go after checkout
+      with:
+        go-version: '1.21.x'
+        cache-dependency-path: subdir/go.sum
 
-      - name: Go Test Action
-        uses: robherley/go-test-action@v0.1.0
+    # [Edit] Retrieving from Development Repository
+    - name: Checkout Development
+      uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        go mod download
 
-      - name: Checkout Test Repo
-        uses: actions/checkout@v4
-        with:
-          repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
+    - name: Go Test Action
+      uses: robherley/go-test-action@v0.1.0
 
-      - name: Run BDD tests
-        uses: joonvena/robotframework-docker-action@v1.0
-        with:
-          robot_tests_dir: TestCases
-      - name: Store BDD test report
-        uses: actions/upload-artifact@v1
-        if: always()
-        with:
-          name: reports
-          path: reports
+    - name: Checkout Test Repo
+      uses: actions/checkout@v4
+      with:
+        repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
+
+    - name: Run BDD tests
+      uses: joonvena/robotframework-docker-action@v1.0
+      with:
+        robot_tests_dir: TestCases
+    - name: Store BDD test report
+      uses: actions/upload-artifact@v1
+      if: always()
+      with:
+        name: reports
+        path: reports
 
   BDD_Report:
     if: always()
-    needs: [test]
+    needs: [Build_SetUp_and_TDD]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Download test report
       uses: actions/download-artifact@v1
       with:
