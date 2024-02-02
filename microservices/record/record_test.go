@@ -1,7 +1,7 @@
-package tests
+package record
 
 import (
-	"CICD_TEST/microservices/record" //change here
+	// "CICD_TEST/microservices/record" //change here
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestDeleteRecordHandler(t *testing.T) {
-	record.DB()
+	DB()
 
 	// recordID follows existing record for deletion with recordID=4 in record_db for testing deletion
 	recordID := "3"
@@ -21,7 +21,7 @@ func TestDeleteRecordHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	record.DeleteRecordHandler(rr, req)
+	DeleteRecordHandler(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)

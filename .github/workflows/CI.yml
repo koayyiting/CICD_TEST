@@ -35,7 +35,11 @@ jobs:
       - name: Run Go Test Files
         working-directory: ./tests
         run: |
-          go test -v -cover -coverprofile=coverage.out ./...
+          for dir in $(find . -type d -name '*_test'); do
+            cd $dir
+            go test -v -cover -coverprofile=coverage.out ./...
+            cd -
+          done
           
       - name: Test
         uses: robherley/go-test-action@v0.1.0

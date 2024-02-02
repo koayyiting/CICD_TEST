@@ -1,8 +1,8 @@
 // account_test.go
-package tests
+package account
 
 import (
-	"CICD_TEST/microservices/account" //change here
+	// "CICD_TEST/microservices/account" //change here
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -23,7 +23,7 @@ func TestCreateAccHandler(t *testing.T) {
 	defer db.Close()
 
 	// Replace the actual database connection with the mock
-	account.SetDB(db)
+	SetDB(db)
 
 	// Set up expected database query and result
 	mock.ExpectPrepare("INSERT INTO Account").
@@ -31,7 +31,7 @@ func TestCreateAccHandler(t *testing.T) {
 		WithArgs("testacc", "testpwd", "User", "Pending").
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	newAcc := account.Account{
+	newAcc := Account{
 		Username:  "testacc",
 		Password:  "testpwd",
 		AccType:   "User",
@@ -51,7 +51,7 @@ func TestCreateAccHandler(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Call the handler directly
-	account.CreateAccHandler(rr, req)
+	CreateAccHandler(rr, req)
 
 	// Check the status code
 	if status := rr.Code; status != http.StatusCreated {
@@ -84,7 +84,7 @@ func TestGetAccHandler(t *testing.T) {
 	defer db.Close()
 
 	// Replace the actual database connection with the mock
-	account.SetDB(db)
+	SetDB(db)
 
 	// Set up expectations for the query and scan to return sql.ErrNoRows
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT AccID, Username, Password, AccType, AccStatus FROM Account WHERE Username = ? AND Password = ?")).
@@ -99,14 +99,14 @@ func TestGetAccHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	account.GetAccHandler(rr, req)
+	GetAccHandler(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
 
 	// Unmarshal the response body into an Account struct
-	var acc account.Account
+	var acc Account
 	err = json.NewDecoder(rr.Body).Decode(&acc)
 	if err != nil {
 		t.Fatal(err)
@@ -135,7 +135,7 @@ func TestApproveAccHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	account.ApproveAccHandler(rr, req)
+	ApproveAccHandler(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
@@ -151,7 +151,7 @@ func TestApproveAccHandler(t *testing.T) {
 func TestAdminCreateAccHandler(t *testing.T) {
 	//dB()
 
-	newAcc := account.Account{
+	newAcc := Account{
 		Username:  "admincreatedacc",
 		Password:  "admincreatedpwd",
 		AccType:   "User",
@@ -171,7 +171,7 @@ func TestAdminCreateAccHandler(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Call the handler directly
-	account.AdminCreateAccHandler(rr, req)
+	AdminCreateAccHandler(rr, req)
 
 	// Check the status code
 	if status := rr.Code; status != http.StatusCreated {
@@ -196,7 +196,7 @@ func TestDeleteAccHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	account.DeleteAccHandler(rr, req)
+	DeleteAccHandler(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
@@ -215,7 +215,7 @@ func TestUpdateAccHandler(t *testing.T) {
 	accID := "2005"
 
 	// Create a request with a JSON payload for updating the account
-	updatedAcc := account.Account{
+	updatedAcc := Account{
 		Username: "testupdatepass",
 		AccType:  "Admin",
 	}
@@ -231,7 +231,7 @@ func TestUpdateAccHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	account.UpdateAccHandler(rr, req)
+	UpdateAccHandler(rr, req)
 
 	if status := rr.Code; status != http.StatusAccepted {
 		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusAccepted)
