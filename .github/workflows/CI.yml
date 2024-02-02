@@ -43,13 +43,30 @@ jobs:
       #       cd -
       #     done
           
+      # - name: Go Test Action
+      #   uses: robherley/go-test-action@v0.1.0
+      #   with:
+      #     moduleDirectory: ./microservices  # Assuming the root of your Go module is the current directory
+      #     testArguments: ./...  # Run tests in all subdirectories
+        
+      # - name: Upload Coverage Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: TDD Coverage Report
+      #     path: coverage.out
       - name: Go Test Action
         uses: robherley/go-test-action@v0.1.0
         with:
-          moduleDirectory: ./microservices  # Assuming the root of your Go module is the current directory
+          moduleDirectory: .  # Assuming the root of your Go module is the current directory
           testArguments: ./...  # Run tests in all subdirectories
-        
-      - name: Upload Coverage Report
+          args: -v -cover -coverprofile=coverage.out  # Explicitly generate coverage report
+
+      - name: Display Test Output (if report exists)
+        if: ${{ success() }}  # Only run if the previous step succeeded
+        run: cat coverage.out
+
+      - name: Upload Coverage Report (if report exists)
+        if: ${{ success() }}  # Only run if the previous step succeeded
         uses: actions/upload-artifact@v3
         with:
           name: TDD Coverage Report
