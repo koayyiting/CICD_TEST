@@ -46,8 +46,6 @@ jobs:
       - name: Go Test Action
         uses: robherley/go-test-action@v0.1.0
         with:
-          moduleDirectory: ./microservices  # Assuming the root of your Go module is the current directory
-          testArguments: ./...  # Run tests in all subdirectories
           omitUntestedPackages: true  # Omit packages with no tests
           omitPie: true              # Disable pie chart
         
