@@ -2,155 +2,46 @@
 name: Continuous Integration
 
 on:
-  pull_request: 
-   types: 
-    - merged
-    - closed
-   
   push:
-    branches:
-      - main
-    
+  
 jobs:
   # Set up necessary installs
   Build_SetUp:
     name: Build SetUp
-    uses: ./.github/workflows/BuildingSetUp.yml
-
-  # Reference to Test Cases in repository
-  Testing:
-    name: Run Test Cases
-    needs: Build_SetUp
     runs-on: ubuntu-latest
     steps:
-    # [Edit] Retrieving from Development Repository
-    - name: Checkout Development
-      uses: actions/checkout@v4
-      with:
-        fetch: --depth=1 # Reduces clone size
-        repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Development
-
-    # [Edit] Retrieving from Testing Repository
-    - name: Checkout Testing
-      uses: actions/checkout@v4
-      with:
-        fetch: --depth=1 # Reduces clone size
-        repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
-
-    # [Edit] Test Cases
-    - name: Use Source Folder
-      if: always()
-      run: go get -v -t -d ./microservices
-
-    - name: Use Test Folder
-      run: go test -v ./tdd -coverageprofile=report.out
-
-    - name: Upload Coverage Report
-      uses: codecov/codec-actions@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-
-    # Create Issue for Failed Workflow
-    - if: ${{ failure() }}
-      name: Create Issue on Failed workflow
-      uses: dacbd/create-issue-action@main
-      with:
-        token: ${{ github.token }}
-        title: Issue - `${{ github.workflow }}` failed.
-        body: |
-          [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          [Codebase](https://github.com/${{ github.repository }}/tree/${{ github.sha }})
-          Workflow name - `${{ github.workflow }}`
-          Job -           `${{ github.job }}`
-          status -        `${{ job.status }}`
-          assignees: `${{ github.actor }}`
-        assignees: lacsadoshaniahsantiago, koayyiting
-    
-    # [Edit] Check tdd directory
-    - name: Display tdd directory and content
-      run: |
-        ls -la tdd          # List contents
-        cat tdd/report.out  # Print contents of report.out
-
-    # [Edit] Create testresults directory and move test results in new directory
-    - name: Create Test Results Folder
-      run: |
-        mkdir testresults
-        if [[ -f tdd/report.out ]]; then    #Check if report exists
-          mv tdd/report.out ./testresults
-        else
-          echo "report.out not found in tdd directory."
-          exit 1 #Exit with an error code
-        fi
-    
-    # Upload test results into as artifact
-    - name: Upload Test Results
-      uses: actions/upload-artifact@v2
-      with: 
-        name: testResults
-        path: testresults
-  
-  # Create Issue for Failing Test Results
-  Test_Results:
-    name: Test Cases Fail
-    needs: Testing
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Remote Test Results
-        uses: actions/download-artifact@v2
+      - name: Set Up Go
+        uses: actions/setup-go@v5  # Setup Go after checkout
         with:
-          name: testResults
-          path: testresults
-          
-      - name: Check for Failed Tests
-        id: get_fails_test
+          go-version: '1.21.x'
+          cache-dependency-path: subdir/go.sum
+
+      # [Edit] Retrieving from Development Repository
+      - name: Checkout Development
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
         run: |
-          FAILED_TESTS=$(cat testresults/coverage.out | grep -E "FAIL\|error")
-          if [[ -n "$FAILED_TESTS" ]]; then
-            echo "Failed tests found: $FAILED_TESTS"
-            echo "fail=$FAILED_TESTS" >> $GIHUB_ENV
-            exit 1
-          else
-            echo "All tests passed."
-          fi
-          
-      - name: Check Contents
-        run: |
-          echo "Contents of report.out:"
-          cat testresults/report.out
-          echo "Failed tests count: ${{ steps.get_fails_test.outputs.fail }}"
-
-      # Create Issue for Fail Tests
-      - name: Create Issue on Test Failure
-        if: ${{ failure() }}  # Only runs if the "Check Test Results" step failed
-        uses: dacbd/create-issue-action@main
-        with:
-          token: ${{ github.token }}
-          title: "Tests Failed in ${{ github.workflow }} "
-          body: |
-            **Failed tests have been detected.**
-
-            [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            [Test Results Artifact](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/download?name=testResults)
-
-            **Please investigate and address the failures.**
-          assignees: ${{ github.actor }}
+          go mod download
   
-  # Showcase Test Results
-  Test_Display:
-    name: Save Test Results
-    needs: Testing
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download Remote Test Results
-      uses: actions/download-artifact@v2
-      with:
-        name: testResults
-
-    - name: Publish Test Results
-      if: always()
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: testresults/report.out
+      # [Edit] Test Cases
+      - name: Run Go Files
+        working-directory: ./microservices
+        run: |
+          for dir in ./*/; do
+            go build -v "$dir"
+          done
+          
+      - name: Run Go Test Files
+        working-directory: ./tdd
+        run: |
+          go test -v -coverprofile=report.out ./...
+          
+      - name: Test
+        uses: robherley/go-test-action@v0.1.0
+        
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: TDD Coverage Report
+          path: report.out

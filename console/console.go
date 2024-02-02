@@ -3,8 +3,8 @@
 package main
 
 import (
-	"DevOps_Oct2023_TeamB_Development/microservices/account"
-	"DevOps_Oct2023_TeamB_Development/microservices/record"
+	"CICD_TEST/microservices/account" //change here
+	"CICD_TEST/microservices/record"  //change here
 	"bufio"
 	"bytes"
 	"encoding/json"
