@@ -44,7 +44,7 @@ jobs:
     #   uses: browser-actions/setup-chrome@latest
     # - run: chrome --version
 
-    # Build and run MySQL container
+    # Build and run MySQL container and stop
     - name: Start MySQL container
       uses: docker://koayyiting/mysql_test:latest
 
