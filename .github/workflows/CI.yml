@@ -8,6 +8,13 @@ jobs:
   Build_SetUp_and_TDD:
     name: Build SetUp
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: koayyiting/mysql_test:latest
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: can_we_still_score_for_dop
     steps:
     - name: Set Up Go
       uses: actions/setup-go@v5  # Setup Go after checkout
@@ -38,8 +45,13 @@ jobs:
     # - run: chrome --version
 
     # Build and run MySQL container
-    - name: Start MySQL container
-      uses: docker://koayyiting/mysql_test:latest
+    # - name: Start MySQL container
+    #   uses: docker://koayyiting/mysql_test:latest
+
+    # Build and run MySQL container
+    - name: Wait for MySQL to start
+      run: |
+        sleep 10  # Adjust this delay as needed
 
     - name: Run BDD tests
       uses: joonvena/robotframework-docker-action@v1.0
