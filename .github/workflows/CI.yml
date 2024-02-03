@@ -51,18 +51,21 @@ jobs:
     # Test DB if working
     - name: Wait for MySQL to start
       run: |
-        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT * FROM Account;"'
+        sleep 10
+        
+        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SHOW DATABASES;"'
+        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "USE record_db; SHOW TABLES;"'
 
     - name: Run BDD tests
       uses: joonvena/robotframework-docker-action@v1.0
       with:
         robot_tests_dir: TestCases
 
-    # Build and run MySQL container
+    # Test DB if working2
     - name: Wait for MySQL to start
       run: |
-        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SHOW DATABASES;"'
-        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "USE record_db; SHOW TABLES;"'
+        sleep 10
+        docker exec mysql_container sh -c 'sleep 15 && mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT * FROM Account;"'
 
     - name: Upload BDD test report
       uses: actions/upload-artifact@v1
