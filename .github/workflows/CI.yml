@@ -45,8 +45,8 @@ jobs:
     # - run: chrome --version
 
     # Build and run MySQL container
-    # - name: Start MySQL container
-    #   uses: docker://koayyiting/mysql_test:latest
+    - name: Start MySQL container
+      uses: docker://koayyiting/mysql_test:latest
 
     # Build and run MySQL container
     - name: Wait for MySQL to start
