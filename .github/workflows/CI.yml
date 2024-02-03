@@ -62,7 +62,7 @@ jobs:
         robot_tests_dir: TestCases
 
     # Test DB if working2
-    - name: Wait for MySQL to start
+    - name: Wait for MySQL to start2
       run: |
         sleep 10
         docker exec mysql_container sh -c 'sleep 15 && mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT * FROM Account;"'
