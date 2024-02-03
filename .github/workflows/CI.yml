@@ -48,18 +48,21 @@ jobs:
     - name: Start MySQL container
       run: docker run --name mysql_container -d koayyiting/mysql_test:latest
 
-    # Build and run MySQL container
+    # Test DB if working
     - name: Wait for MySQL to start
       run: |
-        sleep 10  # Adjust this delay as needed
-
-        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SHOW DATABASES;"'
-        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "USE record_db; SHOW TABLES;"'
+        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT * FROM Account;"'
 
     - name: Run BDD tests
       uses: joonvena/robotframework-docker-action@v1.0
       with:
         robot_tests_dir: TestCases
+
+    # Build and run MySQL container
+    - name: Wait for MySQL to start
+      run: |
+        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SHOW DATABASES;"'
+        docker exec mysql_container sh -c 'mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "USE record_db; SHOW TABLES;"'
 
     - name: Upload BDD test report
       uses: actions/upload-artifact@v1
