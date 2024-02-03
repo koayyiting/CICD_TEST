@@ -34,7 +34,7 @@ jobs:
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
         
     - name: Set up chromedriver
-    - uses: browser-actions/setup-chrome@latest
+      uses: browser-actions/setup-chrome@latest
     - run: chrome --version
 
     - name: Run BDD tests
