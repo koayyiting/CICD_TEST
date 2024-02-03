@@ -18,17 +18,24 @@ jobs:
     # [Edit] Retrieving from Development Repository
     - name: Checkout Development
       uses: actions/checkout@v4
+      
     - name: Install dependencies
       run: |
         go mod download
 
-    - name: Go Test Action
+    - name: Run TDD Test
       uses: robherley/go-test-action@v0.1.0
 
     - name: Checkout Test Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
+      env:
+        BROWSER: chrome
       with:
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
+        
+    - name: Set up chromedriver
+    - uses: browser-actions/setup-chrome@latest
+    - run: chrome --version
 
     - name: Run BDD tests
       uses: joonvena/robotframework-docker-action@v1.0
