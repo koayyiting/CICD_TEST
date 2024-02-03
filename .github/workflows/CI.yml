@@ -33,9 +33,13 @@ jobs:
       with:
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
         
-    - name: Set up chromedriver
-      uses: browser-actions/setup-chrome@latest
-    - run: chrome --version
+    # - name: Set up chromedriver
+    #   uses: browser-actions/setup-chrome@latest
+    # - run: chrome --version
+
+    # Build and run MySQL container
+    - name: Start MySQL container
+      uses: docker://koayyiting/mysql_test:latest
 
     - name: Run BDD tests
       uses: joonvena/robotframework-docker-action@v1.0
