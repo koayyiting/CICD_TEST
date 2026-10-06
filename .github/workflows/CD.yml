@@ -1,5 +1,9 @@
 #Release/Deployment 
 name: Release/Deployment  
+permissions:
+  contents: write
+  issues: write
+
 on:
   push:
     tags:
@@ -11,14 +15,14 @@ jobs:
     name: Build Set Up and Test TDD
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Development Repository
+      uses: actions/checkout@v4
+
     - name: Set Up Go
       uses: actions/setup-go@v5
       with:
         go-version: '1.21.x'
-        cache-dependency-path: subdir/go.sum
-
-    - name: Checkout Development Repository
-      uses: actions/checkout@v4
+        cache-dependency-path: go.sum
       
     - name: Install Dependencies
       run: |
@@ -46,7 +50,6 @@ jobs:
           webhookUrl: ${{ secrets.CD_DISCORD_WEBHOOK_URL }}
 
     # TDD Test
-    - uses: actions/checkout@v4
     - name: Run TDD Test
       uses: robherley/go-test-action@v0.1.0
 
@@ -79,7 +82,7 @@ jobs:
         coverage_percentage=$(go tool cover -func=coverage.out | tail -1 | awk '{print $NF}')
 
     - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: coverage.html
@@ -92,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Testing Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: DevOpsTeamB2023/DevOps_Oct2023_TeamB_Testing
 
@@ -141,15 +144,14 @@ jobs:
     # Display BDD Report in Github Action
     - name: Upload BDD Test Report
       if: always()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v4
       with:
         name: reports
         path: reports
 
-    - uses: actions/checkout@v4
     - name: Download BDD Test Report
       if: always()
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4
       with:
         name: reports
 
@@ -169,7 +171,7 @@ jobs:
       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: create a release
       id: create-new-release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
